@@ -1,0 +1,36 @@
+{
+  "name": "road-blocks",
+  "version": "2.0.0",
+  "description": "Isometric city builder",
+  "main": "src/scripts/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AshKyd/roadblocks-3d.git"
+  },
+  "author": "Ash Kyd <ash@kyd.com.au>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/AshKyd/roadblocks-3d/issues"
+  },
+  "devDependencies": {
+    "minifyify": "~7.0.5",
+    "http-server": "~0.8.0",
+    "clean-css": "~3.4.1"
+  },
+  "dependencies": {
+    "install": "^0.1.8",
+    "npm": "^3.3.3",
+    "stats.js": "~1.0.0",
+    "three": "^0.71.1",
+    "three.trackball": "0.0.1"
+  },
+  "scripts": {
+    "clean": "rm dist chrome chrome.zip dist.zip -rf;mkdir -p dist;",
+    "browserify": "browserify src/scripts/index.js | uglifyjs --screw-ie8 -mc > dist/index.js",
+    "copy": "cp src/index.html dist/ -r",
+    "css": "cat src/style/style.css|node_modules/clean-css/bin/cleancss > dist/style.css",
+    "build": "npm run copy & npm run css; wait; npm run browserify",
+    "server": "mkdir -p dist; cd dist; beefy ../src/scripts/index.js:index.js",
+    "watch": "npm run server & node node_modules/watch/cli.js 'npm run build' src --ignoreDotFiles"
+  }
+}
