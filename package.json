@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "install": "^0.1.8",
-    "npm": "^3.3.3",
     "stats.js": "~1.0.0",
     "three": "^0.71.1",
     "three.trackball": "0.0.1"

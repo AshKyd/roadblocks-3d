@@ -13,29 +13,47 @@ var tileSize = 10;
 
 // Set up renderer
 var renderer = new THREE.WebGLRenderer({
-  antialias: true
+  antialias: true,
+  shadowMapEnabled: true,
 });
+renderer.shadowMapEnabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Add some ambience
-var light = new THREE.HemisphereLight(0xeeeeee, 0xaaaaaa, 1);
+var light = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 1);
 scene.add(light);
+
+var sunlight = new THREE.DirectionalLight();
+sunlight.position.set(100, 250, 100);
+sunlight.intensity = .2;
+sunlight.shadowDarkness = .1;
+sunlight.castShadow = true;
+// sunlight.shadowCameraNear = 250;
+// sunlight.shadowCameraFar = 600;
+// sunlight.shadowCameraLeft = -200;
+// sunlight.shadowCameraRight = 200;
+// sunlight.shadowCameraTop = 200;
+// sunlight.shadowCameraBottom = -200;
+sunlight.shadowMapWidth = sunlight.shadowMapHeight = 1024;
+renderer.shadowMapType = THREE.PCFSoftShadowMap;
+scene.add(sunlight);
+
 
 // Isometric camera nicked from here
 // http://stackoverflow.com/questions/23450588/isometric-camera-with-three-js
-/*var aspect = window.innerWidth / window.innerHeight;
-var d = 20;
-var camera = new THREE.OrthographicCamera(
-  - d * aspect,
-  d * aspect,
-  d,
-  - d,
-  1,
-  1000
-);
-camera.position.set( 100, 100, 100 );
-camera.lookAt( scene.position );*/
+// var aspect = window.innerWidth / window.innerHeight;
+// var d = 40;
+// var camera = new THREE.OrthographicCamera(
+//   - d * aspect,
+//   d * aspect,
+//   d,
+//   - d,
+//   1,
+//   1000
+// );
+// camera.position.set( 200, 200, 200 );
+// camera.lookAt( scene.position );
 
 
 //  Add a non-isometric camera to test with.
@@ -46,6 +64,11 @@ camera.position.y = 100;
 
 // Set up mouse controls.
 var controls = new THREE.TrackballControls(camera, renderer.domElement);
+
+window.onscroll = function(e){
+    console.log(e);
+};
+
 
 // A sprite is a collection of boxes.
 function Sprite(sprite) {
@@ -74,6 +97,14 @@ function Sprite(sprite) {
     cube.position.y = y * tileSize;
     cube.position.x = x * tileSize;
     cube.position.z = z * tileSize;
+
+    if(box[7]){
+        material.opacity = box[7];
+        material.transparent = true;
+    } else {
+        cube.castShadow = true;
+        cube.receiveShadow = true;
+    }
 
     // Add it to the scene and save it for later.
     scene.add(cube);
